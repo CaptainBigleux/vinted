@@ -134,7 +134,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     if (!req.files.product_image) {
       return res.json({
         message: "Au moins une image est requise pour créer une offre.",
-        error: error.message,
       });
     }
     //upload image
