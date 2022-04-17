@@ -53,20 +53,22 @@ const validateInputs = (type, content) => {
 //#region SHOWOFFERS
 router.get("/offers", async (req, res) => {
   try {
+    const { page, priceMin, priceMax, title } = req.query;
+
     const numberOfOffers = await Offer.countDocuments();
     const resultPerPage = 10;
     const totalNumberOfPages = Math.ceil(numberOfOffers / resultPerPage);
-    const currentPage = req.query.page ? req.query.page : 1;
+    const currentPage = page ? page : 1;
 
     //autre possibilité: construire un filtre (objet) en fonction des queries passées et le passeer a find()
-    const priceMin = req.query.priceMin ? req.query.priceMin : 0;
-    const priceMax = req.query.priceMax ? req.query.priceMax : Infinity;
+    const newPriceMin = pricceMin ? priceMin : 0;
+    const newPriceMax = priceMax ? priceMax : Infinity;
 
     const offers = await Offer.find({
-      product_name: new RegExp(req.query.title, "i"),
+      product_name: new RegExp(title, "i"),
       product_price: {
-        $gte: priceMin,
-        $lte: priceMax,
+        $gte: newPriceMin,
+        $lte: newPriceMax,
       },
     })
       .limit(resultPerPage)
@@ -111,20 +113,31 @@ router.get("/offer/:id", async (req, res) => {
 //#region PUBLISH
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    validateInputs("description", req.fields.product_description);
-    validateInputs("title", req.fields.product_name);
-    validateInputs("price", req.fields.product_price);
+    const {
+      product_description,
+      product_name,
+      product_price,
+      brand,
+      condition,
+      size,
+      color,
+      city,
+    } = req.fields;
+
+    validateInputs("description", product_description);
+    validateInputs("title", product_name);
+    validateInputs("price", product_price);
 
     const newOffer = new Offer({
-      product_name: req.fields.product_name,
-      product_description: req.fields.product_description,
-      product_price: req.fields.product_price,
+      product_name: product_name,
+      product_description: product_description,
+      product_price: product_price,
       product_details: [
-        { MARQUE: req.fields.brand },
-        { ETAT: req.fields.condition },
-        { TAILLE: req.fields.size },
-        { COULEUR: req.fields.color },
-        { EMPLACEMENT: req.fields.city },
+        { MARQUE: brand },
+        { ETAT: condition },
+        { TAILLE: size },
+        { COULEUR: color },
+        { EMPLACEMENT: city },
       ],
     });
     newOffer.owner = req.user.id;
@@ -176,18 +189,15 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
 router.put("/offer/modify", isAuthenticated, async (req, res) => {
   try {
     // const offersAssociatedWithUser = await Offer.find({ owner: req.user.id }); // toutes les offres associées à l'user
+    const { product_description, product_name, product_price, _id } =
+      req.fields;
+    product_description
+      ? validateInputs("description", product_description)
+      : null;
+    product_name ? validateInputs("title", product_name) : null;
+    product_price ? validateInputs("price", product_price) : null;
 
-    req.fields.product_description
-      ? validateInputs("description", req.fields.product_description)
-      : null;
-    req.fields.product_name
-      ? validateInputs("title", req.fields.product_name)
-      : null;
-    req.fields.product_price
-      ? validateInputs("price", req.fields.product_price)
-      : null;
-
-    const offerToUpdate = await Offer.findById(req.id);
+    const offerToUpdate = await Offer.findById(_id);
 
     const nameChange = req.fields.product_name
       ? req.fields.product_name
@@ -200,13 +210,11 @@ router.put("/offer/modify", isAuthenticated, async (req, res) => {
     // si req.files n'est pas nul, la personne veut MAJ ou ajouter des photos
     //en front, envoyer req files uniquement si ya changement. si oui reupload toutes les photos.
     if (req.files) {
-      await cloudinary.api.delete_all_resources(
-        `/vinted/offers/${req.fields.id}`
-      );
+      await cloudinary.api.delete_all_resources(`/vinted/offers/${_id}`);
 
       for (let i = 0; i < req.files.length; i++) {
         await cloudinary.uploader.upload(req.files[i].product_image.path, {
-          folder: `vinted/offers/${req.fields.id}`,
+          folder: `vinted/offers/${_id}`,
           public_id: nameChange,
         });
       }
@@ -223,7 +231,8 @@ router.put("/offer/modify", isAuthenticated, async (req, res) => {
 //#region DELETE
 router.delete("/offer/delete", isAuthenticated, async (req, res) => {
   try {
-    const result = await Offer.deleteOne({ _id: req.fields.id });
+    const { _id } = req.fields;
+    const result = await Offer.deleteOne({ _id: _id });
 
     if (result.deletedCount === 0) {
       return res
@@ -236,7 +245,7 @@ router.delete("/offer/delete", isAuthenticated, async (req, res) => {
       `/vinted/offers/${req.fields.id}`
     );
 
-    await cloudinary.api.delete_folder(`/vinted/offers/${req.fields.id}`);
+    await cloudinary.api.delete_folder(`/vinted/offers/${_id}`);
 
     res.json("Offre supprimée avec succès.");
   } catch (error) {

@@ -46,27 +46,27 @@ const validatePassword = (password) => {
 //#region SIGNUP
 router.post("/user/signup", async (req, res) => {
   try {
-    const query = req.fields;
+    const { username, email, password, newsletter } = req.fields;
 
     //#region tests de validité d'inputs
 
     //if username is falsy
-    if (!query.username) {
+    if (!username) {
       res.status(400).json("Nom d'utilisateur vide.");
       return;
     }
 
-    if (query.username.length < 4) {
+    if (username.length < 4) {
       res.status(400).json("Veuillez rentrer un nom d'utilisateur plus long.");
       return;
     }
 
-    if (!validateEmail(query.email)) {
+    if (!validateEmail(email)) {
       res.status(400).json("Format d'email invalide.");
       return;
     }
 
-    if (!validatePassword(query.password)) {
+    if (!validatePassword(password)) {
       res
         .status(400)
         .json(
@@ -78,9 +78,9 @@ router.post("/user/signup", async (req, res) => {
     //#endregion
 
     //check if user already exists
-    const checkEmailExist = await User.findOne({ email: query.email });
+    const checkEmailExist = await User.findOne({ email: email });
     const checkUsernameExist = await User.findOne({
-      account: { username: query.username },
+      account: { username: username },
     });
 
     //if user does already exit, respond and exit
@@ -103,14 +103,14 @@ router.post("/user/signup", async (req, res) => {
     const salt = uid2(16);
 
     const token = uid2(16);
-    const hash = SHA256(query.password + salt).toString(encBase64);
+    const hash = SHA256(password + salt).toString(encBase64);
 
     const newUser = new User({
       account: {
-        username: query.username,
+        username: username,
       },
-      email: query.email,
-      newsletter: query.newsletter,
+      email: email,
+      newsletter: newsletter,
       salt: salt,
       hash: hash,
       token: token,
@@ -145,9 +145,9 @@ router.post("/user/signup", async (req, res) => {
 //#region LOGIN
 router.post("/user/login", async (req, res) => {
   try {
-    const query = req.fields;
+    const { email, password } = req.fields;
 
-    const findUser = await User.findOne({ email: query.email });
+    const findUser = await User.findOne({ email: email });
 
     if (!findUser) {
       res
@@ -159,8 +159,7 @@ router.post("/user/login", async (req, res) => {
     }
 
     const checkPassword =
-      SHA256(query.password + findUser.salt).toString(encBase64) ===
-      findUser.hash
+      SHA256(password + findUser.salt).toString(encBase64) === findUser.hash
         ? true
         : false;
 
