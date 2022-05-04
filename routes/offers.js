@@ -73,7 +73,9 @@ router.get("/offers", async (req, res) => {
     })
       .limit(resultPerPage)
       .skip((currentPage - 1) * resultPerPage)
-      .sort({ product_price: req.query.sort.replace("price-", "") })
+      .sort(
+        !req ? { product_price: req.query.sort.replace("price-", "") } : null
+      )
       .populate("owner", "-hash -token -salt")
       .select();
 
