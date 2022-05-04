@@ -64,7 +64,6 @@ router.get("/offers", async (req, res) => {
     const newPriceMin = priceMin ? priceMin : 0;
     const newPriceMax = priceMax ? priceMax : Infinity;
     const newSort = sort ? sort : "price-desc";
-    console.log(newSort);
 
     const offers = await Offer.find({
       product_name: new RegExp(title, "i"),
