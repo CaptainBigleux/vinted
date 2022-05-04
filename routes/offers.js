@@ -74,7 +74,7 @@ router.get("/offers", async (req, res) => {
     })
       .limit(resultPerPage)
       .skip((currentPage - 1) * resultPerPage)
-      .sort({ product_price: newSort.replace("price-", "") })
+      .sort({ product_price: newSort.replace("price-", "") }) //newSort is undefined ?! how TODO
       .populate("owner", "-hash -token -salt")
       .select();
 
