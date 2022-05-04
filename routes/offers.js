@@ -53,7 +53,7 @@ const validateInputs = (type, content) => {
 //#region SHOWOFFERS
 router.get("/offers", async (req, res) => {
   try {
-    const { page, priceMin, priceMax, title } = req.query;
+    const { page, priceMin, priceMax, title, sort } = req.query;
 
     const numberOfOffers = await Offer.countDocuments();
     const resultPerPage = 10;
@@ -61,7 +61,7 @@ router.get("/offers", async (req, res) => {
     const currentPage = page ? page : 1;
 
     //autre possibilité: construire un filtre (objet) en fonction des queries passées et le passeer a find()
-    const newPriceMin = pricceMin ? priceMin : 0;
+    const newPriceMin = priceMin ? priceMin : 0;
     const newPriceMax = priceMax ? priceMax : Infinity;
 
     const offers = await Offer.find({
@@ -73,9 +73,7 @@ router.get("/offers", async (req, res) => {
     })
       .limit(resultPerPage)
       .skip((currentPage - 1) * resultPerPage)
-      .sort(
-        !req ? { product_price: req.query.sort.replace("price-", "") } : null
-      )
+      .sort({ product_price: sort.replace("price-", "") })
       .populate("owner", "-hash -token -salt")
       .select();
 
