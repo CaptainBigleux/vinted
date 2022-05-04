@@ -63,7 +63,7 @@ router.get("/offers", async (req, res) => {
     //autre possibilité: construire un filtre (objet) en fonction des queries passées et le passeer a find()
     const newPriceMin = priceMin ? priceMin : 0;
     const newPriceMax = priceMax ? priceMax : Infinity;
-    const newSort = sort ? sort : "price-DESC";
+    const newSort = sort ? sort : "price-desc";
 
     const offers = await Offer.find({
       product_name: new RegExp(title, "i"),
