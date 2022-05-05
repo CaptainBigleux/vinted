@@ -9,6 +9,7 @@ const User = require("../models/User");
 
 //#region validate email and password
 const validateEmail = (email) => {
+  if (!email) return false;
   const emailBits = email.toLowerCase().split("@"); // will return original string if no @ is found, else an array of strings
   if (email.split(" ").length > 1) return false;
   if (emailBits.length !== 2) return false; // only 1 at
@@ -18,9 +19,10 @@ const validateEmail = (email) => {
 };
 
 const validatePassword = (password) => {
+  if (!password) return false;
   const arrPass = password.split("");
   const isLongEnough = arrPass.length >= 8 ? true : false;
-  const specialCharacters = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/; // regex
+  const specialCharacters = /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/; // regex
   let isOneMaj = false;
   let isOneMin = false;
   let isOneNumber = false;
@@ -31,7 +33,7 @@ const validatePassword = (password) => {
       isOneMaj = arrPass[i] === arrPass[i].toUpperCase() ? true : false;
     if (!isOneMin)
       isOneMin = arrPass[i] === arrPass[i].toLowerCase() ? true : false;
-    if (!isOneNumber) isOneNumber = parseInt(arrPass[i]) === NaN ? false : true;
+    if (!isOneNumber) isOneNumber = isNaN(Number(arrPass[i])) ? false : true;
     if (!isOneSpecial) {
       if (specialCharacters.test(arrPass[i])) isOneSpecial = true; //test() to test regex
     }
