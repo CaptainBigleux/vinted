@@ -151,17 +151,17 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       });
     }
 
-    newOffer.product_pictures = [];
+    const results = [];
 
     for (let i = 0; i < product_pictures_length; i++) {
       const result = await cloudinary.uploader.upload(
-        req.files.product_image.path,
+        req.files.product_image.path, // or product pictures?
         {
           folder: `vinted/offers/${newOffer._id}`,
           public_id: newOffer.product_name + "-" + i, // correction différente, a check. Bastien mets `${req.fields.title} - ${newOffer._id}`
         }
       );
-      newOffer.product_pictures.push(result);
+      results.push(result);
     }
     // //upload image
     // const result = await cloudinary.uploader.upload(
@@ -190,7 +190,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         _id: newOffer.owner._id,
       },
       product_image: { secure_url: newOffer.product_image.secure_url },
-      product_pictures: newOffer.product_pictures,
+      product_pictures: results,
     });
   } catch (error) {
     return res.json({ error: error.message });
