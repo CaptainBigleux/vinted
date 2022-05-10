@@ -125,8 +125,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       city,
     } = req.fields;
 
-    console.log(req.user);
-
     validateInputs("description", product_description);
     validateInputs("title", product_name);
     validateInputs("price", product_price);
@@ -144,7 +142,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       ],
     });
     newOffer.owner = req.user.id;
-
+    console.log(newOffer);
     await newOffer.populate("owner");
 
     if (!req.files.product_image) {
