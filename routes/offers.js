@@ -150,7 +150,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       });
     }
 
-    const nId = newOffer_id;
+    const nId = newOffer._id;
     console.log(nId);
 
     for (let i = 0; i < req.files.product_pictures.length; i++) {
