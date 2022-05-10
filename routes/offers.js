@@ -150,6 +150,10 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       });
     }
 
+    console.log(req);
+    console.log(req.files);
+    console.log(req.fields);
+
     console.log(req.files.product_pictures);
     newOffer.product_pictures = [];
 
@@ -163,7 +167,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       );
       newOffer.product_pictures.push(result);
     }
-    console.log("loopgood");
     // //upload image
     // const result = await cloudinary.uploader.upload(
     //   req.files.product_image.path,
@@ -172,7 +175,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     //     public_id: newOffer.product_name, // correction différente, a check. Bastien mets `${req.fields.title} - ${newOffer._id}`
     //   }
     // );
-    console.log("product pictures => ", newOffer.product_pictures);
     newOffer.product_image = newOffer.product_pictures[0];
     // newOffer.product_image = result.secure_url;
     await newOffer.save();
