@@ -172,6 +172,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     //   }
     // );
     newOffer.product_image = results[0];
+    newOffer.product_pictures = [...results];
     // newOffer.product_image = result.secure_url;
     await newOffer.save();
 
