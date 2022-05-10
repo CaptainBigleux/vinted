@@ -174,7 +174,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     // newOffer.product_image = result.secure_url;
     await newOffer.save();
 
-    res.json({
+    return res.json({
       _id: newOffer.id,
       product_name: newOffer.product_name,
       product_description: newOffer.product_description,
