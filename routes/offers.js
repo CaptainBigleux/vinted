@@ -150,16 +150,28 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         message: "Au moins une image est requise pour créer une offre.",
       });
     }
-    //upload image
-    const result = await cloudinary.uploader.upload(
-      req.files.product_image.path,
-      {
-        folder: `vinted/offers/${newOffer.id}`,
-        public_id: newOffer.product_name, // correction différente, a check. Bastien mets `${req.fields.title} - ${newOffer._id}`
-      }
-    );
 
-    newOffer.product_image = result.secure_url;
+    for (let i = 0; i < req.files.product_pictures.length; i++) {
+      const result = await cloudinary.uploader.upload(
+        req.files.product_image.path,
+        {
+          folder: `vinted/offers/${newOffer.id}`,
+          public_id: newOffer.product_name + "-" + i, // correction différente, a check. Bastien mets `${req.fields.title} - ${newOffer._id}`
+        }
+      );
+      newOffer.product_pictures.push(result);
+    }
+    // //upload image
+    // const result = await cloudinary.uploader.upload(
+    //   req.files.product_image.path,
+    //   {
+    //     folder: `vinted/offers/${newOffer.id}`,
+    //     public_id: newOffer.product_name, // correction différente, a check. Bastien mets `${req.fields.title} - ${newOffer._id}`
+    //   }
+    // );
+
+    newOffer.product_image = newOffer.product_pictures[0];
+    // newOffer.product_image = result.secure_url;
     await newOffer.save();
 
     res.json({
@@ -176,7 +188,8 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         },
         _id: newOffer.owner._id,
       },
-      product_image: { secure_url: result.secure_url },
+      product_image: { secure_url: newOffer.product_image.secure_url },
+      product_pictures: newOffer.product_pictures,
     });
   } catch (error) {
     return res.json({ error: error.message });

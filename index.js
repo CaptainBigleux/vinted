@@ -1,4 +1,4 @@
-require("dotenv").config;
+require("dotenv").config();
 const express = require("express");
 const formidableMiddleware = require("express-formidable");
 const mongoose = require("mongoose");
