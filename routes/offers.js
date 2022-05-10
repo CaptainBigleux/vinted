@@ -123,6 +123,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       size,
       color,
       city,
+      product_pictures_length,
     } = req.fields;
 
     validateInputs("description", product_description);
@@ -151,10 +152,8 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     }
 
     newOffer.product_pictures = [];
-    console.log(req.fields.product_pictures.length);
-    console.log(req.fields.product_pictures);
 
-    for (let i = 0; i < req.fields.product_pictures.length; i++) {
+    for (let i = 0; i < product_pictures_length; i++) {
       const result = await cloudinary.uploader.upload(
         req.files.product_image.path,
         {
