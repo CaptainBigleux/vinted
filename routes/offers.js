@@ -125,9 +125,11 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       city,
     } = req.fields;
 
-    // validateInputs("description", product_description);
-    // validateInputs("title", product_name);
-    // validateInputs("price", product_price);
+    console.log(req.user);
+
+    validateInputs("description", product_description);
+    validateInputs("title", product_name);
+    validateInputs("price", product_price);
 
     const newOffer = new Offer({
       product_name: product_name,
@@ -173,7 +175,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     newOffer.product_image = newOffer.product_pictures[0];
     // newOffer.product_image = result.secure_url;
     await newOffer.save();
-    console.log(newOffer.id);
 
     return res.json({
       _id: newOffer.id,
