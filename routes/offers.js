@@ -149,12 +149,12 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         message: "Au moins une image est requise pour créer une offre.",
       });
     }
-    console.log("product image good");
+
     for (let i = 0; i < req.files.product_pictures.length; i++) {
       const result = await cloudinary.uploader.upload(
         req.files.product_image.path,
         {
-          folder: `vinted/offers/${newOffer.id}`,
+          folder: `vinted/offers/${newOffer._id}`,
           public_id: newOffer.product_name + "-" + i, // correction différente, a check. Bastien mets `${req.fields.title} - ${newOffer._id}`
         }
       );
