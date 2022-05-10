@@ -19,7 +19,7 @@ app.use(UserRoutes);
 const OfferRoutes = require("./routes/offers");
 app.use(OfferRoutes);
 
-router.post("/payment", async (req, res) => {
+app.post("/payment", async (req, res) => {
   //need to export isauthenticated to use it here
   try {
     const { stripeToken, _id } = req.fields;
