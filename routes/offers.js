@@ -150,8 +150,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       });
     }
 
-    const nId = newOffer._id;
-    console.log(nId);
+    newOffer.product_pictures = [];
 
     for (let i = 0; i < req.files.product_pictures.length; i++) {
       const result = await cloudinary.uploader.upload(
@@ -178,7 +177,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     await newOffer.save();
 
     return res.json({
-      _id: newOffer.id,
+      _id: newOffer._id,
       product_name: newOffer.product_name,
       product_description: newOffer.product_description,
       product_price: newOffer.product_price,
