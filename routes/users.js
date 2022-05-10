@@ -121,13 +121,13 @@ router.post("/user/signup", async (req, res) => {
     newUser.account.avatar = {};
     newUser.account.avatar.secure_url = "";
 
-    if (req.files.avatar) {
-      const result = await cloudinary.uploader.upload(req.files.avatar.path, {
-        folder: "vinted/avatars/",
-        public_id: newUser.id,
-      });
-      newUser.account.avatar.secure_url = result.secure_url;
-    }
+    // if (req.files.avatar) {
+    //   const result = await cloudinary.uploader.upload(req.files.avatar.path, {
+    //     folder: "vinted/avatars/",
+    //     public_id: newUser.id,
+    //   });
+    //   newUser.account.avatar.secure_url = result.secure_url;
+    // }
     await newUser.save();
 
     res.json({
@@ -135,7 +135,8 @@ router.post("/user/signup", async (req, res) => {
       token: token,
       account: {
         username: query.username,
-        avatar: { secure_url: newUser.account.avatar.secure_url },
+        // avatar: { secure_url: newUser.account.avatar.secure_url },
+        avatar: { secure_url: "" },
       },
     });
   } catch (error) {
