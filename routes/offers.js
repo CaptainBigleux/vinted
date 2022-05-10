@@ -151,6 +151,8 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     }
 
     newOffer.product_pictures = [];
+    console.log(req.fields.product_pictures.length);
+    console.log(req.fields.product_pictures);
 
     for (let i = 0; i < req.fields.product_pictures.length; i++) {
       const result = await cloudinary.uploader.upload(
