@@ -22,7 +22,7 @@ app.use(OfferRoutes);
 app.post("/payment", async (req, res) => {
   //need to export isauthenticated to use it here
   try {
-    const { stripeToken, _id } = req.fields;
+    const { stripeToken, _id } = req.fields; // will use id to use actual price parameters
 
     const response = await stripe.charges.create({
       amount: 2000,
