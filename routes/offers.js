@@ -150,6 +150,9 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       });
     }
 
+    const nId = newOffer_id;
+    console.log(nId);
+
     for (let i = 0; i < req.files.product_pictures.length; i++) {
       const result = await cloudinary.uploader.upload(
         req.files.product_image.path,
