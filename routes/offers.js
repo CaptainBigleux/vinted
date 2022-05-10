@@ -142,7 +142,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       ],
     });
     newOffer.owner = req.user.id;
-    console.log(newOffer);
     await newOffer.populate("owner");
 
     if (!req.files.product_image) {
@@ -150,7 +149,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         message: "Au moins une image est requise pour créer une offre.",
       });
     }
-
+    console.log("product image good");
     for (let i = 0; i < req.files.product_pictures.length; i++) {
       const result = await cloudinary.uploader.upload(
         req.files.product_image.path,
@@ -161,6 +160,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       );
       newOffer.product_pictures.push(result);
     }
+    console.log("loopgood");
     // //upload image
     // const result = await cloudinary.uploader.upload(
     //   req.files.product_image.path,
@@ -169,7 +169,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     //     public_id: newOffer.product_name, // correction différente, a check. Bastien mets `${req.fields.title} - ${newOffer._id}`
     //   }
     // );
-
+    console.log("product pictures => ", newOffer.product_pictures);
     newOffer.product_image = newOffer.product_pictures[0];
     // newOffer.product_image = result.secure_url;
     await newOffer.save();
