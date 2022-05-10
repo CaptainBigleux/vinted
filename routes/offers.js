@@ -263,9 +263,9 @@ router.delete("/offer/delete", isAuthenticated, async (req, res) => {
 
     await cloudinary.api.delete_folder(`/vinted/offers/${_id}`);
 
-    res.json("Offre supprimée avec succès.");
+    return res.json("Offre supprimée avec succès.");
   } catch (error) {
-    res.json(error);
+    return res.json(error);
   }
 });
 //#endregion
