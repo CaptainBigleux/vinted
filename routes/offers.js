@@ -150,6 +150,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       });
     }
 
+    console.log(req.files.product_pictures);
     newOffer.product_pictures = [];
 
     for (let i = 0; i < req.files.product_pictures.length; i++) {
