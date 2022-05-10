@@ -171,7 +171,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     //     public_id: newOffer.product_name, // correction différente, a check. Bastien mets `${req.fields.title} - ${newOffer._id}`
     //   }
     // );
-    newOffer.product_image = newOffer.product_pictures[0];
+    newOffer.product_image = results[0];
     // newOffer.product_image = result.secure_url;
     await newOffer.save();
 
