@@ -3,6 +3,7 @@ const express = require("express");
 const formidableMiddleware = require("express-formidable");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const isAuthenticated = require("./middlewares/isAuthenticated");
 
 const stripe = require("stripe")(process.env.STRIPE_API_SECRET);
 
@@ -19,8 +20,7 @@ app.use(UserRoutes);
 const OfferRoutes = require("./routes/offers");
 app.use(OfferRoutes);
 
-app.post("/payment", async (req, res) => {
-  //need to export isauthenticated to use it here
+app.post("/payment", isAuthenticated, async (req, res) => {
   try {
     const { token, _id } = req.fields; // will use id to use actual back price parameters
 

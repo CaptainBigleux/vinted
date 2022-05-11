@@ -5,6 +5,8 @@ const cloudinary = require("cloudinary").v2;
 const Offer = require("../models/Offer");
 const User = require("../models/User");
 
+const isAuthenticated = require("../middlewares/isAuthenticated");
+
 //On vient paramétrer cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -13,23 +15,6 @@ cloudinary.config({
 });
 
 //#region Authenticated & Custom methods
-//middleware function to check if user is authenticated before allowing him to post offer
-const isAuthenticated = async (req, res, next) => {
-  try {
-    const checkUser = await User.findOne({
-      token: req.headers.authorization.replace("Bearer ", ""),
-    });
-    if (checkUser) {
-      req.user = checkUser;
-      return next();
-    } else return res.status(400).json("Unauthorized");
-
-    // req.user =
-  } catch (error) {
-    res.json(error);
-  }
-};
-
 const validateInputs = (type, content) => {
   switch (type) {
     case "description":
