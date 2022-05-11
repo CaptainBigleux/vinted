@@ -22,14 +22,14 @@ app.use(OfferRoutes);
 app.post("/payment", async (req, res) => {
   //need to export isauthenticated to use it here
   try {
-    const { stripeToken, _id } = req.fields; // will use id to use actual price parameters
+    const { token, _id } = req.fields; // will use id to use actual back price parameters
 
     const response = await stripe.charges.create({
-      amount: 2000,
+      amount: 2000, // will change with findid
       currency: "eur",
-      description: "La description de l'objet acheté",
+      description: "La description de l'objet acheté", // will change with findid
       // On envoie ici le token
-      source: stripeToken,
+      source: token,
     });
 
     return res.json(response);
