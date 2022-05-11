@@ -53,10 +53,10 @@ const validateInputs = (type, content) => {
 //#region SHOWOFFERS
 router.get("/offers", async (req, res) => {
   try {
-    const { page, priceMin, priceMax, title, sort } = req.query;
+    const { page, priceMin, priceMax, title, sort, limit, skip } = req.query;
 
     const numberOfOffers = await Offer.countDocuments();
-    const resultPerPage = 10;
+    const resultPerPage = limit;
     const totalNumberOfPages = Math.ceil(numberOfOffers / resultPerPage);
     const currentPage = page ? page : 1;
 
@@ -73,7 +73,8 @@ router.get("/offers", async (req, res) => {
       },
     })
       .limit(resultPerPage)
-      .skip((currentPage - 1) * resultPerPage)
+      // .skip((currentPage - 1) * resultPerPage)
+      .skip(skip)
       .sort({ product_price: newSort.replace("price-", "") }) //newSort is undefined ?! how TODO
       .populate("owner", "-hash -token -salt")
       .select();
