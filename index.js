@@ -32,6 +32,9 @@ app.post("/payment", isAuthenticated, async (req, res) => {
       source: token,
     });
 
+    console.log(response.status);
+    console.log(token);
+
     return res.json(response);
   } catch (error) {
     console.log(error.message);
