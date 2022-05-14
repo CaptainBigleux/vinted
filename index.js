@@ -26,10 +26,7 @@ app.post("/payment", isAuthenticated, async (req, res) => {
     const { stripeToken, productID } = req.fields; // will use id to use actual back price parameters
 
     const offer = await Offer.findById(productID);
-    console.log(offer);
     const priceInCents = Number(offer.product_price * 100);
-    console.log("prix centimes", priceInCents);
-    console.log("pp initial", offer.product_price);
 
     const response = await stripe.charges.create({
       amount: priceInCents, // will change with findid
