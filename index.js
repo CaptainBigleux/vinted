@@ -24,13 +24,20 @@ app.post("/payment", isAuthenticated, async (req, res) => {
   try {
     const { token, _id } = req.fields; // will use id to use actual back price parameters
 
-    const response = await stripe.charges.create({
-      amount: 2000, // will change with findid
-      currency: "eur",
-      description: "La description de l'objet acheté", // will change with findid
-      // On envoie ici le token
-      source: token,
-    });
+    const response = await stripe.charges.create(
+      {
+        amount: 2000, // will change with findid
+        currency: "eur",
+        description: "La description de l'objet acheté", // will change with findid
+        // On envoie ici le token
+        source: token,
+      },
+      {
+        headers: {
+          authorization: `Bearer ${process.env.STRIPE_API_SECRET}`,
+        },
+      }
+    );
 
     console.log(response.status);
     console.log(token);
