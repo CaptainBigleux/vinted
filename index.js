@@ -4,6 +4,7 @@ const formidableMiddleware = require("express-formidable");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const isAuthenticated = require("./middlewares/isAuthenticated");
+const Offer = require("./models/Offer");
 
 const stripe = require("stripe")(process.env.STRIPE_API_SECRET);
 
@@ -22,25 +23,20 @@ app.use(OfferRoutes);
 
 app.post("/payment", isAuthenticated, async (req, res) => {
   try {
-    const { token, _id } = req.fields; // will use id to use actual back price parameters
+    const { stripeToken, _id } = req.fields; // will use id to use actual back price parameters
 
-    const response = await stripe.charges.create(
-      {
-        amount: 2000, // will change with findid
-        currency: "eur",
-        description: "La description de l'objet acheté", // will change with findid
-        // On envoie ici le token
-        source: token,
-      },
-      {
-        headers: {
-          authorization: `Authorization: Bearer ${process.env.STRIPE_API_SECRET}`,
-        },
-      }
+    const offer = await Offer.findById(_id);
+    const priceInCents = Number(
+      parseFloat(offer.product_price * 100).toFixed(2)
     );
 
-    console.log(response.status);
-    console.log(token);
+    const response = await stripe.charges.create({
+      amount: priceInCents, // will change with findid
+      currency: "eur",
+      description: offer.product_name,
+      // On envoie ici le token
+      source: stripeToken,
+    });
 
     return res.json(response);
   } catch (error) {
