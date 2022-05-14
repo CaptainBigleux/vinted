@@ -23,9 +23,9 @@ app.use(OfferRoutes);
 
 app.post("/payment", isAuthenticated, async (req, res) => {
   try {
-    const { stripeToken, _id } = req.fields; // will use id to use actual back price parameters
+    const { stripeToken, productID } = req.fields; // will use id to use actual back price parameters
 
-    const offer = await Offer.findById(_id);
+    const offer = await Offer.findById(productID);
     console.log(offer);
     const priceInCents = Number(offer.product_price * 100);
     console.log("prix centimes", priceInCents);
