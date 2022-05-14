@@ -3,7 +3,6 @@ const router = express.Router();
 const cloudinary = require("cloudinary").v2;
 
 const Offer = require("../models/Offer");
-const User = require("../models/User");
 
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
