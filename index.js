@@ -34,7 +34,7 @@ app.post("/payment", isAuthenticated, async (req, res) => {
       },
       {
         headers: {
-          authorization: `Bearer ${process.env.STRIPE_API_SECRET}`,
+          authorization: `Authorization: Bearer ${process.env.STRIPE_API_SECRET}`,
         },
       }
     );
